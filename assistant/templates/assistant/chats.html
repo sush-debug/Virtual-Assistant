@@ -1,0 +1,76 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FRIDAY Chat</title>
+    <meta name="description" content="FRIDAY Chat - Your Virtual Assistant" />
+    <meta name="author" content="Lovable" />
+
+    <meta property="og:title" content="FRIDAY Chat" />
+    <meta property="og:description" content="FRIDAY Chat - Your Virtual Assistant" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.294.0/lucide.min.css" />
+  </head>
+
+  <body>
+    <div class="chat-container">
+      <!-- Header -->
+      <div class="chat-header">
+        <div class="header-info">
+          <div class="bot-icon">
+            <i data-lucide="bot"></i>
+          </div>
+          <div class="header-text">
+            <h1>FRIDAY Chat</h1>
+            <p>Ask me anything!</p>
+          </div>
+        </div>
+        <button class="clear-chat-btn" onclick="clearChat()">
+          <i data-lucide="trash-2"></i>
+          Clear Chat
+        </button>
+      </div>
+
+      <!-- Messages -->
+      <div class="messages-container" id="messagesContainer">
+        <div class="message assistant-message">
+          <div class="message-avatar">
+            <i data-lucide="bot"></i>
+          </div>
+          <div class="message-content">
+            <div class="message-bubble assistant-bubble">
+              <p>Hello! I'm FRIDAY, your virtual assistant. How can I help you today?</p>
+            </div>
+            <span class="message-timestamp">08:25</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="chat-input-container">
+        <div class="input-wrapper">
+          <textarea 
+            id="messageInput" 
+            placeholder="Type your message here..." 
+            rows="1"
+            onkeydown="handleKeyDown(event)"
+            oninput="autoResize(this)"
+          ></textarea>
+          <p class="input-hint">Press Enter to send, Shift + Enter for new line</p>
+        </div>
+        <button class="send-btn" onclick="sendMessage()" id="sendBtn" disabled>
+          <i data-lucide="send"></i>
+        </button>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="{% static 'chats.js' %}"></script>
+  </body>
+</html>
