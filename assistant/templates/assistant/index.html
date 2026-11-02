@@ -1,757 +1,417 @@
-<!-- {% load static %} -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>FRIDAY - Virtual Assistant</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-  
-  <style>
-    :root {
-      --bg1: #101522;
-      --bg2: #151d2b;
-      --bg3: #1a233a;
-      --card: #151a23;
-      --blue: #338aff;
-      --blue2: #2463c7;
-      --blue-glow: #338aff99;
-      --red: #ff3366;
-      --red2: #cc0044;
-      --text: #cbd8e6;
-      --text2: #9eb6d3;
-      --white: #fff;
-      --error: #ff4f4f;
-      --divider: #202c45;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cricket Companion</title>
+    <meta
+      name="description"
+      content="AI-powered live cricket companion dashboard with match insights, player stats, and cricket AI chat."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwUEQp9UiE5H3R2QjD1D3nTnV5ZfQJ3d7l0A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-wrap">
+          <div class="brand-mark">
+            <i class="fa-solid fa-cricket"></i>
+          </div>
+          <div class="brand-copy">
+            <span class="brand-name">Cricket Companion</span>
+            <span class="live-indicator"><span class="pulse"></span> Live</span>
+          </div>
+        </div>
 
-    html, body {
-      height: 100%;
-      background: radial-gradient(ellipse at 70% 10%, #15203b 0%, #101522 100%);
-      color: var(--text);
-      font-family: 'Segoe UI', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-    }
+        <nav class="main-nav" aria-label="Main navigation">
+          <button class="nav-tab active" data-tab="live">Live</button>
+          <button class="nav-tab" data-tab="overs">Overs</button>
+          <button class="nav-tab" data-tab="moments">Moments</button>
+          <button class="nav-tab" data-tab="ask-ai">Ask AI</button>
+        </nav>
 
-    .hidden { display: none !important; }
-    .active { display: block !important; }
+        <div class="toolbar">
+          <div class="demo-badge">Demo Mode</div>
+          <button class="user-pill" type="button" aria-label="Profile">
+            <span class="user-avatar">AK</span>
+          </button>
+        </div>
+      </header>
 
-    /* Auth Card */
-    .auth-card {
-      width: 340px;
-      background: var(--card);
-      margin: 48px auto;
-      border-radius: 18px;
-      box-shadow: 0 2px 24px 0 #1e233499, 0 2px 0 0 #28354a33;
-      padding: 32px 22px 26px 22px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      animation: fadeIn 0.5s;
-      position: relative;
-    }
-    .auth-icon-wrap {
-      padding: 8px 0 18px 0;
-    }
-    .auth-icon {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      background: #182a46;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto;
-      font-size: 1.6rem;
-      color: var(--blue);
-      box-shadow: 0 0 18px 4px #338aff44;
-    }
-    .auth-title {
-      color: var(--blue);
-      font-size: 1.7rem;
-      text-align: center;
-      font-weight: bold;
-      margin-bottom: 0;
-      letter-spacing: 2px;
-      margin-top: 0;
-    }
-    .auth-subtitle {
-      color: var(--text2);
-      font-size: 1.05rem;
-      text-align: center;
-      margin-bottom: 24px;
-      margin-top: 6px;
-    }
-    .form-group {
-      width: 100%;
-      margin-bottom: 15px;
-    }
-    .form-group label {
-      font-weight: 600;
-      font-size: 0.99rem;
-      color: var(--white);
-      margin-bottom: 5px;
-      display: block;
-      letter-spacing: 0.2px;
-    }
-    .form-group input {
-      width: 100%;
-      padding: 11px 13px;
-      border-radius: 8px;
-      border: none;
-      outline: none;
-      background: var(--bg2);
-      color: var(--white);
-      font-size: 1.13rem;
-      margin-top: 4px;
-      border: 1.5px solid transparent;
-      transition: border 0.2s;
-      font-family: inherit;
-      letter-spacing: 0.04em;
-    }
-    .form-group input::placeholder {
-      color: var(--text2);
-      font-size: 1.11rem;
-      opacity: 1;
-    }
-    .form-group input:focus {
-      border-color: var(--blue);
-    }
-    .password-group {
-      position: relative;
-    }
-    .toggle-password {
-      position: absolute;
-      top: 41px;
-      right: 15px;
-      color: var(--text2);
-      cursor: pointer;
-      font-size: 1.08rem;
-      opacity: 0.6;
-      transition: opacity 0.2s;
-    }
-    .toggle-password:hover {
-      opacity: 1;
-    }
-    .form-btn.main-btn {
-      width: 100%;
-      margin-top: 2px;
-      background: var(--blue);
-      color: #fff;
-      border: none;
-      font-size: 1.11rem;
-      padding: 12px 0 9px 0;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 0 0 0 #338aff55;
-      transition: background 0.2s, box-shadow 0.2s;
-      letter-spacing: 0.1em;
-    }
-    .form-btn.main-btn:hover {
-      background: var(--blue2);
-      box-shadow: 0 0 6px 2px #338aff55;
-    }
-    .form-error {
-      color: var(--error);
-      font-size: 0.97rem;
-      margin-top: 2px;
-      min-height: 18px;
-    }
-    .divider {
-      text-align: center;
-      margin: 18px 0 11px 0;
-      color: var(--text2);
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .divider:before, .divider:after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: var(--divider);
-      border-radius: 2px;
-    }
-    .social-btns {
-      width: 100%;
-      display: flex;
-      gap: 12px;
-      margin-bottom: 13px;
-    }
-    .social-btn {
-      flex: 1;
-      background: var(--bg2);
-      color: var(--white);
-      border: 1.5px solid var(--divider);
-      border-radius: 10px;
-      font-size: 1.03rem;
-      font-weight: 500;
-      padding: 10px 0;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: background 0.18s, border 0.18s;
-    }
-    .social-btn:hover {
-      background: var(--bg3);
-      border-color: var(--blue);
-    }
-    .switch-auth {
-      color: var(--text2);
-      text-align: center;
-      font-size: 0.99rem;
-      margin-top: 7px;
-    }
-    .switch-link {
-      color: var(--blue);
-      cursor: pointer;
-      font-weight: 600;
-      text-decoration: underline;
-      margin-left: 3px;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1;}
-    }
+      <main class="dashboard">
+        <section class="match-header panel">
+          <div class="match-identity">
+            <div class="team-block">
+              <div class="team-logo csk">CSK</div>
+              <div>
+                <div class="team-name">Chennai Super Kings</div>
+                <div class="team-label">Batting</div>
+              </div>
+            </div>
 
-    /* Initializing Screen */
-    .init-screen {
-      width: 100vw;
-      height: 100vh;
-      background: radial-gradient(ellipse at 70% 10%, #15203b 0%, #101522 100%);
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: fixed;
-      z-index: 1000;
-      top: 0; left: 0;
-    }
-    .init-orb-wrap {
-      margin-top: 90px;
-      margin-bottom: 16px;
-    }
-    .init-orb {
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      border: 2.5px solid var(--blue);
-      box-shadow: 0 0 44px 8px #338aff44;
-      background: transparent;
-      color: var(--blue);
-      font-size: 3.6rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      animation: orbPulse 2.5s linear infinite;
-    }
-    .init-orb i {
-      z-index: 1;
-    }
-    .init-dot {
-      width: 17px;
-      height: 17px;
-      background: var(--blue);
-      border-radius: 50%;
-      position: absolute;
-      top: 48%;
-      right: -18px;
-      transform: translateY(-50%);
-      box-shadow: 0 0 14px 2px #338aff77;
-      animation: orbDotMove 2.5s linear infinite;
-    }
-    @keyframes orbPulse {
-      0%, 100% { box-shadow: 0 0 44px 8px #338aff44; }
-      50%      { box-shadow: 0 0 88px 22px #338aff77; }
-    }
-    @keyframes orbDotMove {
-      0%   { right: -18px; }
-      50%  { right: -38px;}
-      100% { right: -18px;}
-    }
-    .init-title {
-      color: var(--blue);
-      font-size: 2.3rem;
-      font-weight: bold;
-      margin-bottom: 0;
-      margin-top: 32px;
-      text-align: center;
-      letter-spacing: 2px;
-    }
-    .init-desc {
-      color: var(--text2);
-      font-size: 1.18rem;
-      margin-bottom: 36px;
-      text-align: center;
-    }
-    .init-bar {
-      width: 38vw; max-width: 520px; min-width: 240px;
-      height: 7px;
-      background: var(--bg2);
-      border-radius: 8px;
-      margin-bottom: 18px;
-      position: relative;
-      overflow: hidden;
-    }
-    .init-bar::after {
-      content: '';
-      display: block;
-      width: 84%;
-      height: 100%;
-      background: var(--blue);
-      border-radius: 8px;
-      animation: barGrow 2s linear infinite;
-    }
-    @keyframes barGrow {
-      0% { width: 10%; }
-      25% { width: 60%;}
-      80% { width: 95%;}
-      100% { width: 10%;}
-    }
-    .init-welcome {
-      color: var(--blue);
-      font-size: 1.08rem;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-    .init-dots {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-    }
-    .init-dots span {
-      display: block;
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: var(--blue);
-      opacity: 0.5;
-      animation: initDotFade 1.2s infinite;
-    }
-    .init-dots span:nth-child(2) { animation-delay: 0.3s; }
-    .init-dots span:nth-child(3) { animation-delay: 0.6s; }
-    @keyframes initDotFade {
-      0%,100% { opacity: 0.5;}
-      40% { opacity: 1;}
-    }
+            <div class="match-center">
+              <div class="format">IPL • Chennai</div>
+              <div class="status-tag">Live</div>
+            </div>
 
-    .main-app {
-      display: none;
-      width: 100vw;
-      min-height: 100vh;
-      background: radial-gradient(ellipse at 70% 10%, #15203b 0%, #101522 100%);
-    }
+            <div class="team-block right-align">
+              <div>
+                <div class="team-name">Mumbai Indians</div>
+                <div class="team-label">Bowling</div>
+              </div>
+              <div class="team-logo mi">MI</div>
+            </div>
+          </div>
 
-    /* Main Navbar */
-    .main-navbar {
-      width: 100vw;
-      background: #101522;
-      min-height: 64px;
-      padding: 0 36px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-sizing: border-box;
-    }
-    .main-nav-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .main-nav-logo {
-      color: var(--blue);
-      font-size: 1.4rem;
-      margin-right: 1px;
-    }
-    .main-nav-title {
-      color: var(--blue);
-      font-size: 1.13rem;
-      font-weight: bold;
-      letter-spacing: 1px;
-      margin-right: 8px;
-    }
-    .main-nav-desc {
-      color: var(--text2);
-      font-size: 1rem;
-      margin-top: 2px;
-    }
-    .main-nav-center {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .main-nav-btn {
-      background: transparent;
-      border: none;
-      color: var(--text2);
-      font-size: 1.04rem;
-      font-weight: 500;
-      border-radius: 8px;
-      padding: 7px 17px;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      text-decoration: none;
-    }
-    .main-nav-btn.active,
-    .main-nav-btn:hover {
-      background: var(--blue);
-      color: #fff;
-    }
-    .main-nav-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .main-user-avatar {
-      background: var(--blue);
-      color: #fff;
-      border-radius: 50%;
-      width: 34px;
-      height: 34px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.07rem;
-    }
-    .main-user-info {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      margin-right: 4px;
-    }
-    .main-user-name {
-      color: var(--white);
-      font-weight: 600;
-      font-size: 1.01rem;
-    }
-    .main-user-email {
-      color: var(--text2);
-      font-size: 0.94rem;
-      letter-spacing: 0.03rem;
-    }
-    .main-logout-btn {
-      background: #181f2e;
-      color: var(--white);
-      border: none;
-      border-radius: 8px;
-      font-size: 1.03rem;
-      font-weight: 600;
-      padding: 7px 14px;
-      cursor: pointer;
-      transition: background 0.18s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .main-logout-btn:hover {
-      background: var(--blue2);
-      color: #fff;
-    }
+          <div class="score-strip">
+            <div class="score-copy">
+              <div class="score-line">
+                <span class="score">182/5</span>
+                <span class="overs">(18.4)</span>
+              </div>
+              <div class="status-line">Need 16 from 10 balls</div>
+            </div>
 
-    /* Home Section */
-    .main-section {
-      display: none;
-    }
-    .main-section.active {
-      display: block;
-      animation: fadeIn 0.6s;
-    }
-    .home-section {
-      width: 100vw;
-      max-width: 100vw;
-      min-height: calc(100vh - 64px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 35px;
-    }
-    .home-title {
-      color: var(--blue);
-      font-size: 2.0rem;
-      text-align: center;
-      font-weight: bold;
-      margin-bottom: 0;
-      margin-top: 7px;
-      letter-spacing: 1.5px;
-    }
-    .home-title span {
-      color: var(--blue);
-      font-weight: bold;
-    }
-    .home-desc {
-      color: var(--text2);
-      font-size: 1.09rem;
-      text-align: center;
-      margin-bottom: 34px;
-      margin-top: 8px;
-      max-width: 540px;
-    }
-    /* Orb and Mic Section */
-    /* .main-orb-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 16px 0 28px 0;
-      gap: 18px;
-    }
-    /* Orb GIF */
-    /* .orb-gif {
-      width: 400px;
-      height: 400px;
-      object-fit: contain;
-      border-radius: 100%;
-      background: #151a23;
-      box-shadow: 0 0 44px 8px #338aff44;
-      display: block;
-    } */
-    .main-orb-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 16px 0 28px 0;
-  gap: 18px;
-}
+            <div class="meta-grid">
+              <div class="meta-box">
+                <span class="label">Target</span>
+                <strong>198</strong>
+              </div>
+              <div class="meta-box">
+                <span class="label">RR</span>
+                <strong>11.6</strong>
+              </div>
+              <div class="meta-box">
+                <span class="label">Req RR</span>
+                <strong>9.6</strong>
+              </div>
+            </div>
+          </div>
+        </section>
 
-.orb-container {
-  width: 400px;
-  height: 400px;
-  border-radius: 100%;
-  background: #151a23;
-  box-shadow: 0 0 44px 8px #338aff44;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden; /* Ensure GIF doesn’t overflow */
-}
+        <section class="content-grid">
+          <div class="panel video-panel">
+            <div class="panel-topline">
+              <span class="eyebrow">Broadcast</span>
+              <span class="demo-pill">Demo Mode • Simulated feed</span>
+            </div>
 
-.orb-gif {
-  width: 800px; /* Adjust this size as needed */
-  height: auto; /* Maintain aspect ratio */
-}
+            <div class="video-shell">
+              <video id="demoVideo" playsinline preload="metadata" muted controls>
+                <source id="videoSource" src="" type="video/mp4" />
+              </video>
 
-    
-    
+              <div class="video-overlay">
+                <div class="video-tag">Live</div>
+                <div class="video-score">CSK 182/5 • 18.4</div>
+              </div>
+            </div>
 
+            <div class="video-controls">
+              <button type="button" class="control-btn" id="playPauseBtn">
+                <i class="fa-solid fa-play"></i>
+              </button>
+              <button type="button" class="control-btn" id="fullscreenBtn">
+                <i class="fa-solid fa-expand"></i>
+              </button>
+              <div class="speed-control">
+                <span>Speed</span>
+                <button type="button" class="speed-btn active" data-speed="1">1x</button>
+                <button type="button" class="speed-btn" data-speed="1.25">1.25x</button>
+                <button type="button" class="speed-btn" data-speed="1.5">1.5x</button>
+              </div>
+            </div>
+          </div>
 
-    .mic-btn {
-      border-radius: 50%;
-      background: var(--blue);
-      color: #fff;
-      border: none;
-      font-size: 2.3rem;
-      width: 72px;
-      height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 10px auto;
-      box-shadow: 0 0 18px 2px #338aff66;
-      transition: background 0.2s, box-shadow 0.2s;
-      cursor: pointer;
-      outline: none;
-      position: relative;
-      z-index: 1;
-    }
-    .mic-btn.active {
-      background: linear-gradient(135deg, var(--red), var(--red2));
-      color: #fff;
-      box-shadow: 0 0 28px 6px #ff336677;
-    }
-    .mic-status {
-      color: var(--text2);
-      font-size: 1.11rem;
-      text-align: center;
-      margin-top: 12px;
-    }
-    .home-status-card {
-      margin-top: 10px;
-      background: var(--card);
-      border-radius: 18px;
-      box-shadow: 0 2px 26px 0 #1e233444;
-      padding: 23px 22px 12px 22px;
-      width: 290px;
-      max-width: 94vw;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .status-title {
-      color: var(--white);
-      font-size: 1.07rem;
-      font-weight: 600;
-      margin-bottom: 7px;
-    }
-    .status-desc {
-      color: var(--text2);
-      font-size: 0.98rem;
-      margin-bottom: 10px;
-    }
-    .voice-btn {
-      background: var(--blue);
-      color: #fff;
-      border: none;
-      font-size: 1.03rem;
-      padding: 10px 24px;
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-bottom: 12px;
-      margin-top: 6px;
-      box-shadow: 0 0 0 0 #338aff55;
-      transition: background 0.2s, box-shadow 0.2s;
-    }
-    .voice-btn:hover {
-      background: var(--blue2);
-      box-shadow: 0 0 6px 2px #338aff55;
-    }
-    .status-options {
-      display: flex;
-      width: 100%;
-      justify-content: space-between;
-      margin-top: 6px;
-      padding-top: 7px;
-      border-top: 1.3px solid var(--divider);
-      color: var(--text2);
-      font-size: 0.93rem;
-      gap: 8px;
-    }
-    .status-options div {
-      text-align: center;
-      flex: 1;
-    }
-    .status-options span {
-      display: block;
-      color: var(--blue);
-      font-weight: 600;
-      font-size: 0.98rem;
-    }
+          <aside class="panel side-panel">
+            <div class="panel-heading">
+              <h3>Scorecard</h3>
+              <span>18.4 overs</span>
+            </div>
 
-    @media (max-width: 900px) {
-      .main-orb-wrap .orb-gif { width: 160px; height: 160px;}
-      .home-status-card { width: 99vw; max-width: 99vw; padding: 14px 5vw;}
-    }
+            <div class="score-table">
+              <div class="table-row heading-row">
+                <span>Batting</span>
+                <span>R</span>
+                <span>B</span>
+                <span>SR</span>
+              </div>
 
-    @media (max-width: 600px) {
-      .auth-card { width: 93vw; padding: 20px 2vw;}
-      .main-navbar { padding: 0 2vw;}
-      .main-orb-wrap .orb-gif { width: 110px; height: 110px;}
-      .home-status-card { width: 98vw; padding: 12px 2vw;}
-    }
+              <div class="table-row">
+                <span>R. Gaikwad</span>
+                <span>82</span>
+                <span>48</span>
+                <span>170.8</span>
+              </div>
+              <div class="table-row">
+                <span>J. du Plessis</span>
+                <span>46</span>
+                <span>29</span>
+                <span>158.6</span>
+              </div>
+              <div class="table-row">
+                <span>R. Jadeja</span>
+                <span>14</span>
+                <span>8</span>
+                <span>175.0</span>
+              </div>
+            </div>
 
-    @media (max-width: 450px) {
-      .auth-card { width: 99vw; padding: 10px 2vw;}
-      .main-navbar { padding: 0 0.5vw;}
-      .main-orb-wrap .orb-gif { width: 40vw; height: 40vw; max-width: 100px;}
-    }
-  </style>
-</head>
-<body>
-<!-- AUTH PAGE -->
-<div id="authSection" class="auth-card">
-  <div class="auth-icon-wrap"><div class="auth-icon"><i class="fas fa-bolt"></i></div></div>
-  <h1 class="auth-title">FRIDAY</h1>
-  <div class="auth-subtitle" id="authSubtitle">Welcome back! Sign in to continue.</div>
-  <form id="authForm" autocomplete="off" novalidate>
-    <div id="fullNameGroup" class="form-group" style="display:none;">
-      <label for="authFullName">Full Name</label>
-      <input type="text" id="authFullName" placeholder="Enter your full name" autocomplete="name" />
-      <div class="form-error" id="fullNameError"></div>
+            <div class="divider"></div>
+
+            <div class="score-table compact">
+              <div class="table-row heading-row">
+                <span>Bowling</span>
+                <span>O</span>
+                <span>R</span>
+                <span>W</span>
+              </div>
+
+              <div class="table-row">
+                <span>P. Bumrah</span>
+                <span>4.0</span>
+                <span>37</span>
+                <span>2</span>
+              </div>
+              <div class="table-row">
+                <span>J. Archer</span>
+                <span>3.4</span>
+                <span>39</span>
+                <span>1</span>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="last-over-box">
+              <div class="box-label">Current over</div>
+              <span class="over-ball">6 • 1 • W • 4 • 1 • 2</span>
+            </div>
+
+            <div class="partnership-card">
+              <div>
+                <span class="label">Partnership</span>
+                <strong>38 off 18</strong>
+              </div>
+              <div>
+                <span class="label">Req RR</span>
+                <strong>9.6</strong>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="tab-section panel">
+          <div class="tabs-row" role="tablist" aria-label="Match insights tabs">
+            <button class="tab-button active" type="button" data-tab="live-panel">Live</button>
+            <button class="tab-button" type="button" data-tab="overs-panel">Overs</button>
+            <button class="tab-button" type="button" data-tab="moments-panel">Moments</button>
+            <button class="tab-button" type="button" data-tab="ask-panel">Ask AI</button>
+          </div>
+
+          <div class="tab-panel active" id="live-panel">
+            <div class="insights-grid">
+              <article class="insight-card accent-cyan">
+                <div class="card-header">
+                  <span class="card-label">Latest Over Summary</span>
+                  <span class="chip success">+12</span>
+                </div>
+                <h4>Gaikwad dominated the back of length plan</h4>
+                <p>
+                  The bowlers kept trying the slower ball outside off, but Gaikwad was waiting for the
+                  length to shorten and used the spin of the hips to pick up two fours and a single. The
+                  over changed the pressure equation for CSK without making the chase look easy.
+                </p>
+              </article>
+
+              <article class="insight-card accent-teal">
+                <div class="card-header">
+                  <span class="card-label">Five-Over Match Recap</span>
+                  <span class="chip muted">+3.2</span>
+                </div>
+                <h4>Momentum has shifted to Chennai</h4>
+                <p>
+                  After a slow start, CSK accelerated during the 15th and 16th overs by targeting the fielders
+                  in the deep. MI still control the powerplay, but the required rate has dropped below nine,
+                  which usually signals an advantage to the chasing side.
+                </p>
+              </article>
+
+              <article class="insight-card accent-purple">
+                <div class="card-header">
+                  <span class="card-label">Match Momentum</span>
+                  <span class="chip warning">Hot</span>
+                </div>
+                <h4>Pressure slipping away from Mumbai</h4>
+                <p>
+                  Chennai have scored 58 runs in the last four overs while keeping wickets in hand. MI have
+                  been forced into their most expensive spell of the innings, and the fielding side looks less
+                  settled than it did at the halfway stage.
+                </p>
+              </article>
+
+              <article class="insight-card accent-gold">
+                <div class="card-header">
+                  <span class="card-label">Pressure Analysis</span>
+                  <span class="chip neutral">Pressure</span>
+                </div>
+                <h4>Death overs are beginning to squeeze Mumbai</h4>
+                <p>
+                  The required rate remains manageable, but MI now need a high-risk over from the 18th or 19th.
+                  The wicket from Bumrah helped, yet the field spread around long-off and deep midwicket is making
+                  each boundary feel like a larger tactical concession.
+                </p>
+              </article>
+
+              <article class="insight-card accent-rose">
+                <div class="card-header">
+                  <span class="card-label">Key Turning Points</span>
+                  <span class="chip soft">2</span>
+                </div>
+                <h4>Boundaries in the 16th over flipped the game</h4>
+                <p>
+                  The 16th over brought a wicket and a boundary, but the real turning point was the 17th, where
+                  the pair rotated strike brilliantly against the slower bowlers. That over wasn’t just about
+                  total runs; it was about confidence and fielding pressure.
+                </p>
+              </article>
+
+              <article class="insight-card accent-mint">
+                <div class="card-header">
+                  <span class="card-label">Player Performance Insights</span>
+                  <span class="chip mint">Impact</span>
+                </div>
+                <h4>Gaikwad is controlling the chase</h4>
+                <p>
+                  Gaikwad is winning the battle against the slower deliveries by staying leg-side aware and
+                  attacking the square boundaries on length. His strike rotation has reduced the demand on the
+                  tail, and he is now the player most likely to decide the final overs.
+                </p>
+              </article>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="overs-panel">
+            <div class="overs-grid">
+              <div class="over-card active">
+                <span class="over-no">18th over</span>
+                <strong>6 • 1 • W • 4 • 1 • 2</strong>
+                <p>Gaikwad drove through cover and Bumrah lost length on the final ball.</p>
+              </div>
+
+              <div class="over-card">
+                <span class="over-no">17th over</span>
+                <strong>4 • 1 • 0 • 1 • 4 • 1</strong>
+                <p>Momentum swung after a slower ball was punished against the spin.</p>
+              </div>
+
+              <div class="over-card">
+                <span class="over-no">16th over</span>
+                <strong>1 • 1 • W • 4 • 0 • 1</strong>
+                <p>CSK kept pressure on by hitting into the leg side while rotating strike.</p>
+              </div>
+
+              <div class="over-card">
+                <span class="over-no">15th over</span>
+                <strong>2 • 4 • 1 • 1 • 2 • 0</strong>
+                <p>Chennai accelerated after the field spread wider than expected.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="moments-panel">
+            <div class="moment-toolbar">
+              <div class="filter-group">
+                <button class="filter-btn active" type="button">All</button>
+                <button class="filter-btn" type="button">Wickets</button>
+                <button class="filter-btn" type="button">Boundaries</button>
+                <button class="filter-btn" type="button">Turning point</button>
+              </div>
+            </div>
+
+            <div class="timeline-list">
+              <div class="timeline-item wicket">
+                <span class="time-tag">18.2</span>
+                <div class="timeline-copy">
+                  <h4>Wicket: Suryakumar dismissed</h4>
+                  <p>A slower cutter outside off brought the ball to the edge, forcing a mistimed loft. The wicket kept the chase alive but also signaled the cost of taking risks against spin.</p>
+                </div>
+              </div>
+
+              <div class="timeline-item boundary">
+                <span class="time-tag">17.6</span>
+                <div class="timeline-copy">
+                  <h4>Gaikwad crunches cover drive</h4>
+                  <p>Driving through extra cover shifted the field back and forced the bowler to attack wider. It mattered because it removed the need to play across the line against the wide yorker.</p>
+                </div>
+              </div>
+
+              <div class="timeline-item turning">
+                <span class="time-tag">16.4</span>
+                <div class="timeline-copy">
+                  <h4>Pressure reversal</h4>
+                  <p>After a quiet spell, Chennai answered with a short-arm jab for four. That boundary mattered because it stopped the dot-ball buildup and created immediate match momentum.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="ask-panel">
+            <div class="chat-shell">
+              <div class="chat-header-inline">
+                <div>
+                  <span class="chat-badge">Ask AI</span>
+                  <h3>Cricket Intelligence</h3>
+                </div>
+              </div>
+
+              <div class="chat-body" id="chatBody">
+                <div class="message ai-message">
+                  <div class="message-avatar ai">AI</div>
+                  <div class="message-bubble">
+                    <p>CSK need 16 from 10. The chase is still alive, but Mumbai are trying to force a mistake on the slower balls. What would you like to understand?</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="suggestion-row">
+                <button class="suggestion-chip" type="button">Why is this match becoming difficult for the batting team?</button>
+                <button class="suggestion-chip" type="button">Who is controlling the match?</button>
+                <button class="suggestion-chip" type="button">Explain the last over.</button>
+                <button class="suggestion-chip" type="button">What should the batting team do next?</button>
+              </div>
+
+              <form class="chat-composer" id="chatForm">
+                <input
+                  type="text"
+                  id="chatInput"
+                  placeholder="Ask a cricket question..."
+                  aria-label="Chat input"
+                />
+                <button type="submit" class="send-btn">
+                  <i class="fa-solid fa-paper-plane"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
-    <div class="form-group">
-      <label for="authEmail">Email</label>
-      <input type="email" id="authEmail" placeholder="Enter your email" autocomplete="email" />
-      <div class="form-error" id="emailError"></div>
-    </div>
-    <div class="form-group password-group">
-      <label for="authPassword">Password</label>
-      <input type="password" id="authPassword" placeholder="Enter your password" autocomplete="current-password" />
-      <span class="toggle-password" id="togglePassword"><i class="far fa-eye"></i></span>
-      <div class="form-error" id="passwordError"></div>
-    </div>
-    <button type="submit" class="form-btn main-btn" id="mainAuthBtn">Sign In</button>
-    <div class="form-error" id="authError"></div>
-    <div class="divider"><span>OR CONTINUE WITH</span></div>
-    <div class="social-btns">
-      <button type="button" class="social-btn" id="googleBtn"><i class="fa-regular fa-envelope"></i> Google</button>
-      <button type="button" class="social-btn" id="githubBtn"><i class="fa-brands fa-github"></i> GitHub</button>
-    </div>
-    <div class="switch-auth" id="switchAuth">
-      Don't have an account? <span id="switchAuthLink" class="switch-link">Sign up</span>
-    </div>
-  </form>
-</div>
 
-<!-- INIT PAGE -->
-<div id="initScreen" class="init-screen">
-  <div class="init-orb-wrap">
-    <div class="init-orb"><i class="fas fa-bolt"></i><span class="init-dot"></span></div>
-  </div>
-  <h1 class="init-title">FRIDAY</h1>
-  <div class="init-desc">Initializing your AI companion</div>
-  <div class="init-bar"></div>
-  <div class="init-welcome">Welcome to your Virtual Assistant!</div>
-  <div class="init-dots"><span></span><span></span><span></span></div>
-</div>
-
-<!-- MAIN APP -->
-<div id="mainApp" class="main-app">
-  <nav class="main-navbar">
-    <div class="main-nav-left">
-      <span class="main-nav-logo"><i class="fas fa-bolt"></i></span>
-      <span class="main-nav-title">FRIDAY</span>
-      <span class="main-nav-desc">AI Companion</span>
-    </div>
-    <div class="main-nav-center">
-      <button class="main-nav-btn active" id="navHome"><i class="fas fa-home"></i> Home</button>
-      <button class="main-nav-btn" id="navChat"><i class="fas fa-comments"></i> Chat</button>
-    </div>
-    <div class="main-nav-right" id="userBox">
-      <div class="main-user-avatar" id="userAvatar">S</div>
-      <div class="main-user-info">
-        <div class="main-user-name" id="userName"></div>
-        <div class="main-user-email" id="userEmail"></div>
-      </div>
-      <button class="main-logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-    </div>
-  </nav>
-  <div class="main-section home-section active" id="homeSection">
-    <h2 class="home-title">Welcome to <span>FRIDAY</span></h2>
-    <div class="home-desc">Your intelligent AI companion is ready to help. Activate the microphone below to start voice interactions.</div>
-    <div class="main-orb-wrap">
-      <!-- Use static tag for the GIF -->
-      <!-- <img src="{% static 'images/FRIDAY.gif' %}" alt="FRIDAY AI Assistant" class="orb-gif" id="orbGif"> -->
-       <div class="orb-container">
-    <img src="{% static 'images/FRIDAY.gif' %}" alt="FRIDAY" class="orb-gif"/>
-  </div>
-      <button class="mic-btn" id="micBtn" title="Toggle Mic">
-        <i class="fas fa-microphone"></i>
-      </button>
-      <div class="mic-status" id="micStatus">Mic is off - Click to activate</div>
-    </div>
-    <div class="home-status-card">
-      <div class="status-title"><i class="fas fa-bolt"></i> FRIDAY Status: <span id="fridayStatus">Standby</span></div>
-      <div class="status-desc">Activate microphone to begin</div>
-      <div class="status-options">
-        <div>Voice Commands<br><span>Activated</span></div>
-        <div>Response Mode<br><span>Intelligent</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Load JavaScript files using Django static tags -->
-<script src="{% static 'index.js' %}"></script>
-<!-- <script src="{% static 'chats.js' %}"></script> -->
-</body>
+    <script src="{% static 'index.js' %}"></script>
+  </body>
 </html>
